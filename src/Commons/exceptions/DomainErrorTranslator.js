@@ -2,6 +2,7 @@ const InvariantError = require('./InvariantError');
 
 const DomainErrorTranslator = {
   translate(error) {
+    // console.log(error.message)
     return DomainErrorTranslator._directories[error.message] || error;
   },
 };
@@ -17,6 +18,12 @@ DomainErrorTranslator._directories = {
   'REFRESH_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('refresh token harus string'),
   'DELETE_AUTHENTICATION_USE_CASE.NOT_CONTAIN_REFRESH_TOKEN': new InvariantError('harus mengirimkan token refresh'),
   'DELETE_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('refresh token harus string'),
+  //threads
+  'ADD_THREAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('data ada yang kurang'),
+  'ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('data type harus sesuai'),
+  //comments
+  'ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('data ada yang kurang'),
+  'ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('data type harus sesuai'),
 };
 
 module.exports = DomainErrorTranslator;

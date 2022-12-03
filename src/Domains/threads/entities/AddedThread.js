@@ -2,18 +2,30 @@ class AddedThread {
   constructor(payload) {
     this._verifyPayload(payload);
 
-    this.title=payload.title
-    this.body=payload.body
+    const { id, title, body, userId } = payload;
+
+    this.id = id;
+    this.title = title;
+    this.userId = userId;
   }
 
-  _verifyPayload({ title, body }) {
-    if (!title || !body) {
+  _verifyPayload({ id, title,  userId }) {
+    if (
+      !id ||
+      !title ||
+      !userId
+    ) {
       throw new Error("ADDED_THREAD.NOT_CONTAIN_NEEDED_PROPERTY");
     }
 
-    if (typeof title !== "string" || typeof body !== "string") {
+    if (
+      typeof id !== "string" ||
+      typeof title !== "string" ||
+      typeof userId !== "string"
+    ) {
       throw new Error("ADDED_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION");
     }
   }
 }
-module.exports=AddedThread
+
+module.exports = AddedThread;

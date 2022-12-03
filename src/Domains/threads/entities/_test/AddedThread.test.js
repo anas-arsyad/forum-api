@@ -1,39 +1,40 @@
-const AddedThread = require('../AddedThread');
+const AddedThread = require("../AddedThread")
 
-describe('a AddedThread entities', () => {
-  it('should throw error when payload did not contain needed property', () => {
-    // Arrange
-    const payload = {
-      title: 'Dicoding',
-    };
 
-    // Action and Assert
-    expect(() => new AddedThread(payload)).toThrowError("ADDED_THREAD.NOT_CONTAIN_NEEDED_PROPERTY");
-  });
+describe('a AddedThread entieties',()=>{
+    it('should throw error when payload  did not match  needed propery',()=>{
+        const payload ={
+            id:'thread-ajsldaisdm',            
+            userId:'user-alnsasd',
+            // title:'testing title',
+        }
 
-  it('should throw error when payload did not meet data type specification', () => {
-    // Arrange
-    const payload = {
-      title: 123,
-      body: {},
-    };
+        expect(()=>new AddedThread(payload)).toThrowError('ADDED_THREAD.NOT_CONTAIN_NEEDED_PROPERTY')
+    })
 
-    // Action and Assert
-    expect(() => new AddedThread(payload)).toThrowError("ADDED_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION");
-  });
+    it('should throw error when payload did not match data spesification',()=>{
+        const payload ={
+            id:'thread-ajsldaisdm',            
+            userId:'user-alnsasd',
+            title:{},
+            // body:765
+        }
+        expect(()=>new AddedThread(payload)).toThrowError('ADDED_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION')
+    })
 
-  it('should create Thread object correctly', () => {
-    // Arrange
-    const payload = {
-      title: 'dicoding',
-      body: 'Dicoding Indonesia',
-    };
+    it('should create registeredUser object correctly',()=>{
+        const payload={
+            id:'thread-ajsldaisdm',            
+            userId:'user-alnsasd',
+            title:'dasdsd',
+            // body:'asdasd'
+        }
 
-    // Action
-    const addedThread = new AddedThread(payload);
-    
-    // Assert
-    expect(addedThread.title).toEqual(payload.title);
-    expect(addedThread.body).toEqual(payload.body);
-  });
-});
+        let addedThread= new AddedThread(payload)
+
+        expect(addedThread.id).toEqual(payload.id)
+        expect(addedThread.userId).toEqual(payload.userId)
+        expect(addedThread.title).toEqual(payload.title)
+        // expect(addedThread.body).toEqual(payload.body)
+    })
+})

@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-const AddedThread = require('../../../Domains/threads/entities/AddedThread');
+const AddThread = require('../../../Domains/threads/entities/AddThread');
 
 class AddThreadUseCase {
   constructor({ threadRepository }) {
@@ -7,10 +7,8 @@ class AddThreadUseCase {
   }
 
   async execute(useCasePayload) {
-    const addedThread = new AddedThread(useCasePayload);
-    // await this._threadRepository.(registerUser.username);
-    registerUser.password = await this._passwordHash.hash(registerUser.password);
-    return this._userRepository.addUser(registerUser);
+    const validatePayload = new AddThread(useCasePayload);
+    return await this._threadRepository.addThread(validatePayload)
   }
 }
 
