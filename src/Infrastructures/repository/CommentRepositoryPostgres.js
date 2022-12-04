@@ -25,21 +25,6 @@ class CommentRepositoryPostgres extends CommentRepository {
       userId,
     });
   }
-  async addReply(payload) {
-    const id = `comment-${this._idGenerator()}`;
-    const query = {
-      text: "INSERT INTO comments VALUES($1,$2,$3,$4) returning id,content,user_id",
-      values: [id, payload.content, payload.userId, payload.threadId],
-    };
-
-    let result = await this._pool.query(query);
-    let { id: idComment, content, user_id: userId } = result.rows[0];
-    return new AddedComment({
-      id: idComment,
-      content,
-      userId,
-    });
-  }
 
   async deleteComment(payload) {
     const query = {

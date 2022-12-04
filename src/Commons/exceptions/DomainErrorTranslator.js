@@ -26,6 +26,9 @@ DomainErrorTranslator._directories = {
   //comments
   'ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('data ada yang kurang'),
   'ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('data type harus sesuai'),
+  //replies
+  'ADD_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('data ada yang kurang'),
+  'ADD_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('data type harus sesuai'),
 };
 
 module.exports = DomainErrorTranslator;
