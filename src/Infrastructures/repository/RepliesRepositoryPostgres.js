@@ -25,6 +25,29 @@ class RepliesRepositoryPostgres extends RepliesRepository {
     };
   }
 
+  async getRepliesByCommentId(commentId){
+    const query = {
+        text:`
+        select
+            r.id,
+            r."content" ,
+            r."date" ,
+            u.username
+        from
+            replies r
+        join users u on
+            r.user_id = u.id
+        where r.comment_id =$1
+        order by
+            r."date" asc
+        `,
+        values: [commentId],
+      };
+  
+      let result = await this._pool.query(query); 
+      return result.rows
+  }
+
   async deleteReply(payload) {
     const query = {
       text: "UPDATE replies set is_deleted = true where id=$1 ",
