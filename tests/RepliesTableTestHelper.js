@@ -1,16 +1,17 @@
 /* istanbul ignore file */
 const pool = require("../src/Infrastructures/database/postgres/pool");
 
-const CommentsTableTestHelper = {
-  async addComment({
-    id = "comment-123",
+const RepliesTableTestHelper = {
+  async addReply({
+    id = "reply-123",
     content = "Test content",
-    threadId = "thread-kjasld",
+    commentId = "comment-kjasld",
     userId = "user-123",
+    date=new Date()
   }) {
     const query = {
-      text: "INSERT INTO comments VALUES($1,$2,$3,$4) returning id,content,user_id",
-      values: [id, content, userId, threadId],
+      text: "INSERT INTO replies VALUES($1,$2,$3,$4,$5,$6) returning id,content,user_id",
+      values: [id, content, userId, commentId,false,date],
     };
 
     await pool.query(query);
@@ -18,7 +19,7 @@ const CommentsTableTestHelper = {
 
   async selectAll() {
     const query = {
-      text: "SELECT * FROM comments",
+      text: "SELECT * FROM replies",
       values: [],
     };
 
@@ -26,9 +27,9 @@ const CommentsTableTestHelper = {
     return result.rows;
   },
 
-  async findCommentsById(id) {
+  async findReplyById(id) {
     const query = {
-      text: "SELECT * FROM comments WHERE id = $1",
+      text: "SELECT * FROM replies WHERE id = $1",
       values: [id],
     };
 
@@ -37,12 +38,12 @@ const CommentsTableTestHelper = {
   },
 
   async cleanTable() {
-    await pool.query("DELETE FROM comments WHERE 1=1");
+    await pool.query("DELETE FROM replies WHERE 1=1");
   },
 
-  async deleteComment(payload) {
+  async deleteReply(payload) {
     const query = {
-      text: "UPDATE comments set is_deleted = true where id=$1 ",
+      text: "UPDATE replies set is_deleted = true where id=$1 ",
       values: [payload.id],
     };
 
@@ -52,4 +53,4 @@ const CommentsTableTestHelper = {
   }
 };
 
-module.exports = CommentsTableTestHelper;
+module.exports = RepliesTableTestHelper;

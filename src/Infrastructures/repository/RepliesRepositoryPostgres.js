@@ -30,9 +30,13 @@ class RepliesRepositoryPostgres extends RepliesRepository {
         text:`
         select
             r.id,
-            r."content" ,
             r."date" ,
-            u.username
+            u.username,
+            case
+                when 
+                r.is_deleted = true then '**balasan telah dihapus**'
+                else r."content"
+            end content
         from
             replies r
         join users u on
@@ -46,6 +50,30 @@ class RepliesRepositoryPostgres extends RepliesRepository {
   
       let result = await this._pool.query(query); 
       return result.rows
+  }
+
+  async checkReplyBelong({ id, userId }) {
+    const query = {
+      text: "SELECT id FROM replies WHERE id = $1 AND user_id=$2",
+      values: [id, userId],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new AuthorizationError("reply tidak ada 2");
+    }
+  }
+  async checkReplyById(id) {
+    const query = {
+      text: "SELECT id FROM replies WHERE id = $1",
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError("reply tidak ada ");
+    }
+    return true
   }
 
   async deleteReply(payload) {

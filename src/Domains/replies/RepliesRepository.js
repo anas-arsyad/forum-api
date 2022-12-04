@@ -8,6 +8,12 @@ class RepliesRepository {
   async getRepliesByCommentId(payload) {
     throw new Error("REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   } 
+  async checkReplyBelong(payload) {
+    throw new Error("REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
+  async checkReplyById(payload) {
+    throw new Error("REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
 }
 
 module.exports = RepliesRepository;

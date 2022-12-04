@@ -67,6 +67,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     if (!result.rows.length) {
       throw new NotFoundError("thread tidak ada ");
     }
+    return true
   }
 }
 

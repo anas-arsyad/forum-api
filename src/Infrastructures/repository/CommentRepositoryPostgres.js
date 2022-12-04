@@ -78,6 +78,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     if (!result.rows.length) {
       throw new NotFoundError("comment tidak ada 1");
     }
+    return true
   }
 
   async checkCommentBelong({ id, userId }) {
