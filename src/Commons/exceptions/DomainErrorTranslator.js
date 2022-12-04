@@ -21,6 +21,8 @@ DomainErrorTranslator._directories = {
   //threads
   'ADD_THREAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('data ada yang kurang'),
   'ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('data type harus sesuai'),
+  'DETAIL_THREAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('data ada yang kurang'),
+  'DETAIL_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('data type harus sesuai'),
   //comments
   'ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('data ada yang kurang'),
   'ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('data type harus sesuai'),

@@ -11,6 +11,15 @@ class CommentRepository {
   async checkCommentBelong(payload) {
     throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
+  async getCommentByThreadId(payload) {
+    throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
+  async addReply(payload) {
+    throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
+  async deleteReply(payload) {
+    throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
 }
 
 module.exports = CommentRepository;

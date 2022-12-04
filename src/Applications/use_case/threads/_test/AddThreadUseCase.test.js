@@ -12,26 +12,31 @@ describe("AddThread", () => {
       body: "Dicoding body",
     };
 
-    const expectedThread = new AddedThread({
+    const expectedThread = {
+      id: "thread-234234",
+      title: payload.title,
+      owner: payload.userId,
+    };
+    const returnThread = new AddedThread({
       id: "thread-234234",
       title: payload.title,
       userId: payload.userId,
     });
-
     let mockThreadRepository = new ThreadRepository();
     mockThreadRepository.addThread = jest
-    .fn()
-    .mockImplementation(() => Promise.resolve(expectedThread));
-    
+      .fn()
+      .mockImplementation(() => Promise.resolve(returnThread));
+
     const threadUseCase = new AddThreadUseCase({
-        threadRepository: mockThreadRepository,
+      threadRepository: mockThreadRepository,
     });
 
     /* action */
-    const createThread = await threadUseCase.execute(payload)
-
+    const createThread = await threadUseCase.execute(payload);
     /* assert */
-    expect(createThread).toStrictEqual(expectedThread)
-    expect(mockThreadRepository.addThread).toBeCalledWith(new AddThread(payload))
+    expect(createThread).toStrictEqual(expectedThread);
+    expect(mockThreadRepository.addThread).toBeCalledWith(
+      new AddThread(payload)
+    );
   });
 });
