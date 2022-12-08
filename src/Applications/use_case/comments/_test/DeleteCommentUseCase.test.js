@@ -38,6 +38,9 @@ describe("delete comment", () => {
     
     /* assert */
     expect(createComment).toStrictEqual(true);
-    
+    expect(mockThreadRepository.checkThreadById).toBeCalledWith(payload.threadId); 
+    expect(mockCommentRepository.checkCommentById).toBeCalledWith(payload.id); 
+    expect(mockCommentRepository.checkCommentBelong).toBeCalledWith(payload); 
+    expect(mockCommentRepository.deleteComment).toBeCalledWith(payload); 
   });
 });

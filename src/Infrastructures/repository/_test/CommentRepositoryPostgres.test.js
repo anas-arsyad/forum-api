@@ -147,6 +147,16 @@ describe("CommentRepositoryPostgres", () => {
       let getComment= await commentRepositoryPostgres.getCommentByThreadId(useCasePayload.threadId);
       /* assert */
       expect(getComment).toHaveLength(1);
+      expect(getComment).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+              id: 'comment-1243243',
+              username: 'dicoding',
+              date: expect.any(Date),
+              content: 'Test content'
+          })
+        ])
+      )
     });
 
     it('should return not found', async () => {

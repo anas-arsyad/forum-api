@@ -57,7 +57,10 @@ class CommentRepositoryPostgres extends CommentRepository {
             t1.id = t2.thread_id
         join users t3 on
             t3.id = t2.user_id
-        where t1.id =$1`,
+        where t1.id =$1
+        order by
+            t2."date" asc
+        `,
       values: [id],
     };
 

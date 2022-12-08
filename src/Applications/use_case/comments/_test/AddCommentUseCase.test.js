@@ -13,7 +13,7 @@ describe("addComment", () => {
       threadId: "thread-asf4",
     };
 
-    const expectedComment = new AddedComment({
+    const returnComment = new AddedComment({
       id: "comment-ahf1",
       content: payload.content,
       userId: payload.userId,
@@ -22,7 +22,7 @@ describe("addComment", () => {
     let mockThreadRepository = new ThreadRepository();
     
     mockCommentRepository.addComment = jest.fn().mockImplementation(() => {
-      return Promise.resolve(expectedComment);
+      return Promise.resolve(returnComment);
     });
     mockThreadRepository.checkThreadById = jest.fn().mockImplementation(() => {
         return Promise.resolve();
@@ -37,9 +37,10 @@ describe("addComment", () => {
 
     const createComment = await commentUseCase.execute(payload);
     /* assert */
-    expect(createComment).toStrictEqual(expectedComment);
+    expect(createComment).toStrictEqual(returnComment);
     expect(mockCommentRepository.addComment).toBeCalledWith(
       new AddComment(payload)
     );
+    expect(mockThreadRepository.checkThreadById).toBeCalledWith(payload.threadId);
   });
 });

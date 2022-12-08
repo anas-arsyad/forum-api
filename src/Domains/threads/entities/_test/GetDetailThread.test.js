@@ -5,7 +5,6 @@ describe("a AddedThread entieties", () => {
     const thread = {
       id: "thread-ajsldaisdm",
       body: "user-alnsasd",
-      // title:'testing title',
     };
 
     expect(() => new GetDetailThread(thread)).toThrowError(
@@ -19,7 +18,7 @@ describe("a AddedThread entieties", () => {
       title: "testing title",
       body: "testing body",
       username:{},
-      date: "2021-08-08T07:19:09.775Z",
+      date: new Date(),
     };
     expect(() => new GetDetailThread(payload)).toThrowError(
       "DETAIL_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION"
@@ -32,7 +31,7 @@ describe("a AddedThread entieties", () => {
       title: "testing title",
       body: "testing body",
       username: "testing",
-      date: "2021-08-08T07:19:09.775Z",
+      date: new Date(),
     };
 
     let detailThread = new GetDetailThread(payload);
@@ -41,6 +40,6 @@ describe("a AddedThread entieties", () => {
     expect(detailThread.title).toEqual(payload.title);
     expect(detailThread.username).toEqual(payload.username);
     expect(detailThread.body).toEqual(payload.body);
-    expect(detailThread.date).toEqual(payload.date);
+    expect(detailThread.date).toBeInstanceOf(Date);
   });
 });

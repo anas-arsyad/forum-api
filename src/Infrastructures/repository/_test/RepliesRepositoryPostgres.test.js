@@ -36,10 +36,11 @@ describe("RepliesRepositoryPostgres", () => {
       );
 
       /* action */
-      await replyRepositoryPostgres.addReply(validatePayloadComments);
-
+      let newReply=await replyRepositoryPostgres.addReply(validatePayloadComments);
+      
       const comment = await RepliesTableTestHelper.findReplyById("reply-123");
       /* assert */
+      expect(newReply).toStrictEqual({ id: 'reply-123', content: 'tetsing content', userId: 'user-123' })
       expect(comment).toHaveLength(1);
     });
   });
@@ -95,6 +96,7 @@ describe("RepliesRepositoryPostgres", () => {
     });
   });
 
+
   describe('getRepliesByCommentId', () => {
     it("getRepliesByCommentId comment", async () => {
       /* arrange */
@@ -128,6 +130,13 @@ describe("RepliesRepositoryPostgres", () => {
       let getComment= await repliesRepositoryPostgres.getRepliesByCommentId(useCasePayload.commentId);
       /* assert */
       expect(getComment).toHaveLength(1);
+      getComment.forEach(element => {
+        expect(element).toHaveProperty('id')
+        expect(element).toHaveProperty('date')
+        expect(element).toHaveProperty('userId')
+        expect(element).toHaveProperty('content')
+    });
+      
     });
 
     it("should return not found", async () => {
