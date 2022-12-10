@@ -1,6 +1,7 @@
 const CommentsTableTestHelper = require("../../../../tests/CommentsTableTestHelper");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
+const AuthorizationError = require("../../../Commons/exceptions/AuthorizationError");
 const NotFoundError = require("../../../Commons/exceptions/NotFoundError");
 const AddComment = require("../../../Domains/comments/entities/AddComment");
 const AddedComment = require("../../../Domains/comments/entities/AddedComment");
@@ -12,6 +13,7 @@ describe("CommentRepositoryPostgres", () => {
   afterEach(async () => {
     await CommentsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
+    await ThreadsTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {
@@ -93,12 +95,14 @@ describe("CommentRepositoryPostgres", () => {
         userId: validatePayloadComments.userId,
       });
       await CommentsTableTestHelper.addComment({
-        id:validatePayloadComments.id,
-        threadId:validatePayloadComments.threadId,
-        userId:validatePayloadComments.userId,
-      })
+        id: validatePayloadComments.id,
+        threadId: validatePayloadComments.threadId,
+        userId: validatePayloadComments.userId,
+      });
       /* action */
-      await commentRepositoryPostgres.deleteComment({id:validatePayloadComments.id});
+      await commentRepositoryPostgres.deleteComment({
+        id: validatePayloadComments.id,
+      });
       const comment = await CommentsTableTestHelper.findCommentsById(
         validatePayloadComments.id
       );
@@ -106,18 +110,20 @@ describe("CommentRepositoryPostgres", () => {
       expect(comment[0].is_deleted).toBe(true);
     });
 
-    it('should return not found', async () => {
+    it("should return not found", async () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(
         pool,
         () => 123
       );
 
-      await expect(commentRepositoryPostgres.deleteComment({id:''})).rejects.toThrow(NotFoundError);
-    }); 
+      await expect(
+        commentRepositoryPostgres.deleteComment({ id: "" })
+      ).rejects.toThrow(NotFoundError);
+    });
   });
 
-  describe('getCommentByThreadId', () => { 
+  describe("getCommentByThreadId", () => {
     it("getCommentByThreadId comment", async () => {
       /* arrange */
       const useCasePayload = {
@@ -139,34 +145,41 @@ describe("CommentRepositoryPostgres", () => {
         userId: useCasePayload.userId,
       });
       await CommentsTableTestHelper.addComment({
-        id:useCasePayload.id,
-        threadId:useCasePayload.threadId,
-        userId:useCasePayload.userId,
-      })
+        id: useCasePayload.id,
+        threadId: useCasePayload.threadId,
+        userId: useCasePayload.userId,
+      });
       /* action */
-      let getComment= await commentRepositoryPostgres.getCommentByThreadId(useCasePayload.threadId);
+      let getComment = await commentRepositoryPostgres.getCommentByThreadId(
+        useCasePayload.threadId
+      );
       /* assert */
       expect(getComment).toHaveLength(1);
       expect(getComment).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-              id: 'comment-1243243',
-              username: 'dicoding',
-              date: expect.any(Date),
-              content: 'Test content'
-          })
+            id: useCasePayload.id,
+            userId: useCasePayload.userId,
+            date: expect.any(Date),
+            content: "Test content",
+          }),
         ])
-      )
+      );
     });
 
-    it('should return not found', async () => {
+    it("should return not found", async () => {
       // Arrange
-      const commentRepositoryPostgres = new CommentRepositoryPostgres( pool, () => 123);
-      await expect(commentRepositoryPostgres.getCommentByThreadId('')).rejects.toThrow(NotFoundError);
-    }); 
-  })
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        () => 123
+      );
+      await expect(
+        commentRepositoryPostgres.getCommentByThreadId("")
+      ).rejects.toThrow(NotFoundError);
+    });
+  });
 
-  describe('checkCommentById', () => { 
+  describe("checkCommentById", () => {
     it("checkCommentById comment", async () => {
       /* arrange */
       const useCasePayload = {
@@ -175,7 +188,10 @@ describe("CommentRepositoryPostgres", () => {
         userId: "user-kla2",
       };
 
-      const commentRepositoryPostgres = new CommentRepositoryPostgres( pool, () => 123);
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        () => 123
+      );
 
       await UsersTableTestHelper.addUser({
         id: useCasePayload.userId,
@@ -185,20 +201,74 @@ describe("CommentRepositoryPostgres", () => {
         userId: useCasePayload.userId,
       });
       await CommentsTableTestHelper.addComment({
-        id:useCasePayload.id,
-        threadId:useCasePayload.threadId,
-        userId:useCasePayload.userId,
-      })
+        id: useCasePayload.id,
+        threadId: useCasePayload.threadId,
+        userId: useCasePayload.userId,
+      });
       /* action */
-      let getComment= await commentRepositoryPostgres.checkCommentById(useCasePayload.id);
+      let getComment = await commentRepositoryPostgres.checkCommentById(
+        useCasePayload.id
+      );
       /* assert */
       expect(getComment).toBe(true);
     });
 
-    it('should return not found', async () => {
+    it("should return not found", async () => {
       // Arrange
-      const commentRepositoryPostgres = new CommentRepositoryPostgres( pool, () => 123);
-      await expect(commentRepositoryPostgres.checkCommentById('')).rejects.toThrow(NotFoundError);
-    }); 
-  })
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        () => 123
+      );
+      await expect(
+        commentRepositoryPostgres.checkCommentById("")
+      ).rejects.toThrow(NotFoundError);
+    });
+  });
+
+  describe("checkCommentBelong", () => {
+    it("checkCommentBelong comment", async () => {
+      /* arrange */
+      const useCasePayload = {
+        threadId: "thread-342tes",
+        id: "comment-1243znxc",
+        userId: "user-kla2",
+      };
+
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        () => 123
+      );
+
+      await UsersTableTestHelper.addUser({
+        id: useCasePayload.userId,
+      });
+      await ThreadsTableTestHelper.addThread({
+        id: useCasePayload.threadId,
+        userId: useCasePayload.userId,
+      });
+      await CommentsTableTestHelper.addComment({
+        id: useCasePayload.id,
+        threadId: useCasePayload.threadId,
+        userId: useCasePayload.userId,
+      });
+      /* action */
+      let getComment = await commentRepositoryPostgres.checkCommentBelong({
+        id: useCasePayload.id,
+        userId: useCasePayload.userId,
+      });
+      /* assert */
+      expect(getComment).toBe(true);
+    });
+
+    it("should return not found", async () => {
+      // Arrange
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        () => 123
+      );
+      await expect(
+        commentRepositoryPostgres.checkCommentBelong("")
+      ).rejects.toThrow(AuthorizationError);
+    });
+  });
 });

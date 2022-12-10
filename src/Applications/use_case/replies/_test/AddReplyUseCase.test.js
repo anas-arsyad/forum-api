@@ -53,6 +53,7 @@ describe("addReply", () => {
     expect(mockRepliesRepository.addReply).toBeCalledWith(
       new AddReply(payload)
     );
+    expect(mockCommentRepository.checkCommentById).toBeCalledWith(payload.commentId);
     expect(mockThreadRepository.checkThreadById).toBeCalledWith(payload.threadId);
   });
 });

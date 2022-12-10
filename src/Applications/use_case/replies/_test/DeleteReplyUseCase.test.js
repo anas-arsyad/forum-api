@@ -48,6 +48,7 @@ describe("delete", () => {
       expect(mockThreadRepository.checkThreadById).toBeCalledWith(payloadUseCase.threadId);
       expect(mockRepliesRepository.checkReplyById).toBeCalledWith(payloadUseCase.id);
       expect(mockRepliesRepository.checkReplyBelong).toBeCalledWith(payloadUseCase);
+      expect(mockRepliesRepository.deleteReply).toBeCalledWith(payloadUseCase);
       expect(deleteReply).toBe(true);
     });
   });

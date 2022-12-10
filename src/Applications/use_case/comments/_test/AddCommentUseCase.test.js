@@ -22,7 +22,11 @@ describe("addComment", () => {
     let mockThreadRepository = new ThreadRepository();
     
     mockCommentRepository.addComment = jest.fn().mockImplementation(() => {
-      return Promise.resolve(returnComment);
+      return Promise.resolve({
+        id: "comment-ahf1",
+        content: payload.content,
+        userId: payload.userId,
+      });
     });
     mockThreadRepository.checkThreadById = jest.fn().mockImplementation(() => {
         return Promise.resolve();
@@ -37,7 +41,7 @@ describe("addComment", () => {
 
     const createComment = await commentUseCase.execute(payload);
     /* assert */
-    expect(createComment).toStrictEqual(returnComment);
+    expect(createComment).toEqual(returnComment);
     expect(mockCommentRepository.addComment).toBeCalledWith(
       new AddComment(payload)
     );

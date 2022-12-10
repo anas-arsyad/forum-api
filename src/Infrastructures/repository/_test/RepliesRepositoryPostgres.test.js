@@ -2,6 +2,7 @@ const CommentsTableTestHelper = require("../../../../tests/CommentsTableTestHelp
 const RepliesTableTestHelper = require("../../../../tests/RepliesTableTestHelper");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
+const AuthorizationError = require("../../../Commons/exceptions/AuthorizationError");
 const NotFoundError = require("../../../Commons/exceptions/NotFoundError");
 const AddReply = require("../../../Domains/replies/entities/AddReply");
 const pool = require("../../database/postgres/pool");
@@ -105,6 +106,7 @@ describe("RepliesRepositoryPostgres", () => {
         id: "reply-1243252",
         userId: "user-klajf2",
         commentId: "comment-afnsdg",
+        content : "Test content",
       };
 
       const repliesRepositoryPostgres = new RepliesRepositoryPostgres( pool, () => 123);
@@ -132,9 +134,13 @@ describe("RepliesRepositoryPostgres", () => {
       expect(getComment).toHaveLength(1);
       getComment.forEach(element => {
         expect(element).toHaveProperty('id')
+        expect(element.id).toBe(useCasePayload.id)
         expect(element).toHaveProperty('date')
+        expect(element.date).toBeInstanceOf(Date)
         expect(element).toHaveProperty('userId')
+        expect(element.userId).toBe(useCasePayload.userId)
         expect(element).toHaveProperty('content')
+        expect(element.content).toBe(useCasePayload.content)
     });
       
     });
@@ -187,6 +193,50 @@ describe("RepliesRepositoryPostgres", () => {
         await expect(
             repliesRepositoryPostgres.checkReplyById({ id: "" })
           ).rejects.toThrow(NotFoundError);
+      });
+  })
+
+  describe('checkReplyBelong', () => {
+    it("should checkReplyBelong correct ", async () => {
+      /* arrange */
+      const useCasePayload = {
+        threadId: "thread-34testing",
+        id: "reply-1243252",
+        userId: "user-klajf2",
+        commentId: "comment-afnsdg",
+      };
+
+      const repliesRepositoryPostgres = new RepliesRepositoryPostgres( pool, () => 123);
+
+      await UsersTableTestHelper.addUser({
+        id: useCasePayload.userId,
+      });
+      await ThreadsTableTestHelper.addThread({
+        id: useCasePayload.threadId,
+        userId: useCasePayload.userId,
+      });
+      await CommentsTableTestHelper.addComment({
+        id: useCasePayload.commentId,
+        threadId: useCasePayload.threadId,
+        userId: useCasePayload.userId,
+      });
+      await RepliesTableTestHelper.addReply({
+        id: useCasePayload.id,
+        commentId: useCasePayload.commentId,
+        userId: useCasePayload.userId,
+      });
+      /* action */
+      let getReply= await repliesRepositoryPostgres.checkReplyBelong({id:useCasePayload.id,userId:useCasePayload.userId});
+      /* assert */
+      expect(getReply).toBe(true);
+    });
+
+    it("should return not found", async () => {
+        // Arrange
+        const repliesRepositoryPostgres = new RepliesRepositoryPostgres( pool, () => 123);
+        await expect(
+            repliesRepositoryPostgres.checkReplyBelong({ id: "" })
+          ).rejects.toThrow(AuthorizationError);
       });
   })
 });

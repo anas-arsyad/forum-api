@@ -25,32 +25,6 @@ class RepliesRepositoryPostgres extends RepliesRepository {
     };
   }
 
-  //   async getRepliesByCommentId(commentId){
-  //     const query = {
-  //         text:`
-  //         select
-  //             r.id,
-  //             r."date" ,
-  //             u.username,
-  //             case
-  //                 when
-  //                 r.is_deleted = true then '**balasan telah dihapus**'
-  //                 else r."content"
-  //             end content
-  //         from
-  //             replies r
-  //         join users u on
-  //             r.user_id = u.id
-  //         where r.comment_id =$1
-  //         order by
-  //             r."date" asc
-  //         `,
-  //         values: [commentId],
-  //       };
-
-  //       let result = await this._pool.query(query);
-  //       return result.rows
-  //   }
 
   async getRepliesByCommentId(commentId) {
     const query = {

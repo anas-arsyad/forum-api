@@ -24,7 +24,7 @@ describe("GetThreadDetailUseCase", () => {
         id: "comment-afa",
         content: "sebuah balasan",
         date: "2022-12-04T09:32:56.864Z",
-        username: "johndoe",
+        username: "testing",
       },
     ];
 
@@ -40,7 +40,7 @@ describe("GetThreadDetailUseCase", () => {
 
     let returnUser = {
       id: "user-lqkj123",
-      username: "johndoe",
+      username: "testing",
     };
 
     let mockCommentRepository = new CommentRepository();
@@ -54,7 +54,15 @@ describe("GetThreadDetailUseCase", () => {
     mockCommentRepository.getCommentByThreadId = jest
       .fn()
       .mockImplementation(() => {
-        return Promise.resolve(returnCommentList);
+        return Promise.resolve([
+          {
+            id: "comment-afa",
+            userId: "user-lqkj123",
+            date: "2021-08-08T07:19:09.775Z",
+            content: "testing body",
+            replies: returnReplies,
+          },
+        ]);
       });
     mockThreadRepository.getThreadById = jest.fn().mockImplementation(() => {
       return Promise.resolve(returnThreadDetail);
@@ -62,12 +70,19 @@ describe("GetThreadDetailUseCase", () => {
     mockRepliesRepository.getRepliesByCommentId = jest
       .fn()
       .mockImplementation(() => {
-        return Promise.resolve(returnReplies);
+        return Promise.resolve([
+          {
+            id: "comment-afa",
+            content: "sebuah balasan",
+            date: "2022-12-04T09:32:56.864Z",
+            userId: "user-lqkj123",
+          },
+        ]);
       });
     mockUserRepository.getUserById = jest.fn().mockImplementation(() => {
       return Promise.resolve(returnUser);
     });
-
+    // console.log(await mockUserRepository.getUserById('asd'))
     const threadUseCase = new GetThreadDetailUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
@@ -82,8 +97,10 @@ describe("GetThreadDetailUseCase", () => {
       ...returnThreadDetail,
       comments: returnCommentList,
     });
-    expect(mockThreadRepository.getThreadById).toBeCalledWith(
-      useCasePayload.threadId
-    );
+    expect(mockThreadRepository.getThreadById).toBeCalledWith( useCasePayload.threadId);
+    expect(mockThreadRepository.checkThreadById).toBeCalledWith( useCasePayload.threadId);
+    expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith( useCasePayload.threadId);
+    expect(mockRepliesRepository.getRepliesByCommentId).toBeCalledWith(returnCommentList[0].id);
+    expect(mockUserRepository.getUserById).toBeCalledWith(returnUser.id);
   });
 });
