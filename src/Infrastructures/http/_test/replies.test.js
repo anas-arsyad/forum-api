@@ -26,7 +26,7 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
     it('should response 201 and new comment', async () => {
       // Arrange
       const requestPayload = {
-        content: 'My random comment of reply is real/',
+        content: 'teasting content',
       };
       const threadId = 'thread-12366669';
       const userId = 'user-1233414';
@@ -60,11 +60,9 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
     it('should response 400 if thread payload not contain needed property',
         async () => {
           // Arrange
-          const requestPayload = {
-          };
-          const threadId = 'thread-12366669';
+          const threadId = 'thread-7643';
           const userId = 'user-1233414';
-          const commentId = 'comment-1000';
+          const commentId = 'comment-9080';
           const accessToken = await ServerTestHelper.getAccessToken(userId);
           await ThreadsTableTestHelper.addThread({id: threadId, userId});
           await CommentsTableTestHelper.addComment({id: commentId, threadId, userId});
@@ -74,7 +72,7 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
           const response = await server.inject({
             method: 'POST',
             url: `/threads/${threadId}/comments/${commentId}/replies`,
-            payload: requestPayload,
+            payload: {},
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -84,18 +82,17 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
           const responseJson = JSON.parse(response.payload);
           expect(response.statusCode).toEqual(400);
           expect(responseJson.status).toEqual('fail');
-          expect(responseJson.message).
-              toEqual('data ada yang kurang');
+          expect(responseJson.message).toEqual('data ada yang kurang');
         });
 
     it('should response 400 if thread payload wrong data type', async () => {
       // Arrange
       const requestPayload = {
-        content: 9999999999,
+        content: {},
       };
-      const threadId = 'thread-12366669';
-      const userId = 'user-1233414';
-      const commentId = 'comment-1000';
+      const threadId = 'thread-743856';
+      const userId = 'user-2648';
+      const commentId = 'comment-3453';
       const accessToken = await ServerTestHelper.getAccessToken(userId);
       await ThreadsTableTestHelper.addThread({id: threadId, userId});
       await CommentsTableTestHelper.addComment({id: commentId, threadId, userId});
@@ -115,14 +112,13 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).
-          toEqual('data type harus sesuai');
+      expect(responseJson.message).toEqual('data type harus sesuai');
     });
 
     it('should response 404 if threadId not found', async () => {
       // Arrange
       const requestPayload = {
-        content: 'My random comment is real/',
+        content: 'testing content',
       };
       const userId = 'user-1233414';
       const accessToken = await ServerTestHelper.getAccessToken(userId);
@@ -131,29 +127,26 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
       // Action
       const response = await server.inject({
         method: 'POST',
-        url: `/threads/thread-notexistss/comments/comments-notexist/replies`,
+        url: `/threads/thread-23681/comments/comments-27503/replies`,
         payload: requestPayload,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}`, },
       });
 
       // Assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(404);
       expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).
-          toEqual('thread tidak ada ');
+      expect(responseJson.message).toEqual('thread tidak ada ');
     });
 
     it('should response 401 if without token', async () => {
       // Arrange
       const requestPayload = {
-        content: 'Any comment please',
+        content: 'tsting content',
       };
-      const threadId = 'thread-12366669';
-      const userId = 'user-1233414';
-      const commentId = 'comment-1000';
+      const threadId = 'thread-0823';
+      const userId = 'user-354';
+      const commentId = 'comment-943858';
       await ServerTestHelper.getAccessToken(userId);
       await ThreadsTableTestHelper.addThread({id: threadId, userId});
       await CommentsTableTestHelper.addComment({id: commentId, threadId, userId});
@@ -178,10 +171,10 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
   describe('when DELETE /threads/{threadId}/comments/{commentId}/replies/{replyId}', () => {
     it('should response 200 and delete the reply', async () => {
       // Arrange
-      const threadId = 'thread-12366669';
-      const userId = 'user-1233414';
-      const commentId = 'comment-1000';
-      const replyId = 'reply-919191';
+      const threadId = 'thread-746578';
+      const userId = 'user-3465';
+      const commentId = 'comment-4236';
+      const replyId = 'reply-57486';
       const accessToken = await ServerTestHelper.getAccessToken(userId);
       await ThreadsTableTestHelper.addThread({id: threadId, userId});
       await CommentsTableTestHelper.addComment({id: commentId, threadId, userId});
@@ -312,11 +305,10 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
       expect(responseJson.message).toEqual('comment tidak ada 1');
     });
 
-
     it('should response 401 if without token', async () => {
       // Arrange
       const requestPayload = {
-        content: 'Any comment please',
+        content: 'content testing',
       };
       const threadId = 'thread-12366669';
       const userId = 'user-1233414';
