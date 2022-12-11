@@ -173,9 +173,8 @@ describe("CommentRepositoryPostgres", () => {
         pool,
         () => 123
       );
-      await expect(
-        commentRepositoryPostgres.getCommentByThreadId("")
-      ).rejects.toThrow(NotFoundError);
+
+       expect( await commentRepositoryPostgres.getCommentByThreadId("")).toHaveLength(0)
     });
   });
 

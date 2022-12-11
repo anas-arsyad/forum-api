@@ -9,7 +9,7 @@ const AuthenticationsTableTestHelper = {
     };
 
     let result =await pool.query(query);
-    console.log(result)
+    // console.log(result)
   },
 
   async findToken(token) {

@@ -1,14 +1,17 @@
 /* istanbul ignore file */
-const pool = require('../src/Infrastructures/database/postgres/pool');
+const pool = require("../src/Infrastructures/database/postgres/pool");
 
 const ThreadsTableTestHelper = {
   async addThread({
-    id = 'thread-123', title = 'Test Title', body = 'TEst title', userId = 'user-123',date=new Date()
+    id = "thread-123",
+    title = "Test Title",
+    body = "TEst title",
+    userId = "user-123",
+    date = new Date(),
   }) {
-    
     const query = {
-      text: 'INSERT INTO threads VALUES($1, $2, $3, $4,$5) returning id',
-      values: [id, title, body, userId,date],
+      text: "INSERT INTO threads VALUES($1, $2, $3, $4,$5) returning id",
+      values: [id, title, body, userId, date],
     };
 
     await pool.query(query);
@@ -16,7 +19,7 @@ const ThreadsTableTestHelper = {
 
   async findThreadsById(id) {
     const query = {
-      text: 'SELECT * FROM threads WHERE id = $1',
+      text: "SELECT * FROM threads WHERE id = $1",
       values: [id],
     };
 
@@ -25,7 +28,7 @@ const ThreadsTableTestHelper = {
   },
 
   async cleanTable() {
-    await pool.query('DELETE FROM threads WHERE 1=1');
+    await pool.query("DELETE FROM threads WHERE 1=1");
   },
 };
 

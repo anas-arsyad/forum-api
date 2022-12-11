@@ -7,10 +7,11 @@ const CommentsTableTestHelper = {
     content = "Test content",
     threadId = "thread-kjasld",
     userId = "user-123",
+    isDeleted = false,
   }) {
     const query = {
-      text: "INSERT INTO comments VALUES($1,$2,$3,$4) returning id,content,user_id",
-      values: [id, content, userId, threadId],
+      text: "INSERT INTO comments VALUES($1,$2,$3,$4,$5) returning id,content,user_id",
+      values: [id, content, userId, threadId,isDeleted],
     };
 
     await pool.query(query);
@@ -39,6 +40,18 @@ const CommentsTableTestHelper = {
   async cleanTable() {
     await pool.query("DELETE FROM comments WHERE 1=1");
   },
+
+  // async addReply({
+  //   id = 'reply-123', content = 'Super Comment', threadId = 'thread-99999', userId = 'user-999999',
+  //   isDeleted = false, commentId = 'comment-1234',
+  // }) {
+  //   const query = {
+  //     text: 'INSERT INTO comments (id, content, thread_Id, user_id, reply_to, is_deleted) VALUES($1, $2, $3, $4, $5, $6)',
+  //     values: [id, content, threadId, userId, commentId, isDeleted],
+  //   };
+
+  //   await pool.query(query);
+  // },
 
   async deleteComment(payload) {
     const query = {
