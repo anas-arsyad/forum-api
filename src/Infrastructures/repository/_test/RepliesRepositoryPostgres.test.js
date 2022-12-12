@@ -137,8 +137,10 @@ describe("RepliesRepositoryPostgres", () => {
         expect(element.id).toBe(useCasePayload.id)
         expect(element).toHaveProperty('date')
         expect(element.date).toBeInstanceOf(Date)
-        expect(element).toHaveProperty('userId')
-        expect(element.userId).toBe(useCasePayload.userId)
+        expect(element).toHaveProperty('username')
+        expect(element).toHaveProperty('isDeleted')
+        expect(element.isDeleted).toBe(false)
+        expect(element.username).toBe('dicoding')
         expect(element).toHaveProperty('content')
         expect(element.content).toBe(useCasePayload.content)
     });

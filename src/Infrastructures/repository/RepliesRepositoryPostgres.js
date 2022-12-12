@@ -24,32 +24,59 @@ class RepliesRepositoryPostgres extends RepliesRepository {
       userId,
     };
   }
+  async getRepliesByCommentId(commentId){
+      const query = {
+          text:`
+          select
+              r.id,
+              r."date" ,
+              u.username,
+              r.is_deleted "isDeleted",
+              r."content"
+              --case
+              --    when
+              --    r.is_deleted = true then '**balasan telah dihapus**'
+              --    else r."content"
+              --end content
+          from
+              replies r
+          join users u on
+              r.user_id = u.id
+          where r.comment_id =$1
+          order by
+              r."date" asc
+          `,
+          values: [commentId],
+        };
 
+        let result = await this._pool.query(query);
+        return result.rows
+    }
 
-  async getRepliesByCommentId(commentId) {
-    const query = {
-      text: `
-            select
-                r.id,
-                r."date" ,
-                r.user_id "userId",
-                case
-                    when 
-                    r.is_deleted = true then '**balasan telah dihapus**'
-                    else r."content"
-                end content
-            from
-                replies r
-            where r.comment_id =$1
-            order by
-                r."date" asc
-            `,
-      values: [commentId],
-    };
+  // async getRepliesByCommentId(commentId) {
+  //   const query = {
+  //     text: `
+  //           select
+  //               r.id,
+  //               r."date" ,
+  //               r.user_id "userId",
+  //               case
+  //                   when 
+  //                   r.is_deleted = true then '**balasan telah dihapus**'
+  //                   else r."content"
+  //               end content
+  //           from
+  //               replies r
+  //           where r.comment_id =$1
+  //           order by
+  //               r."date" asc
+  //           `,
+  //     values: [commentId],
+  //   };
 
-    let result = await this._pool.query(query);
-    return result.rows;
-  }
+  //   let result = await this._pool.query(query);
+  //   return result.rows;
+  // }
 
   async checkReplyBelong({ id, userId }) {
     const query = {

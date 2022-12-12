@@ -14,31 +14,29 @@ class GetThreadDetailUseCase {
   async execute(threadId) {
     await this._threadRepository.checkThreadById(threadId);
     let threadDetail = await this._threadRepository.getThreadById(threadId);
-    let commentList = await this._commentRepository.getCommentByThreadId( threadId);
+    let commentList = await this._commentRepository.getCommentByThreadId(
+      threadId
+    );
     let getReplies = commentList.map(async (item) => {
       let replyList = await this._repliesRepository.getRepliesByCommentId(item.id);
-      let promiseReplyListGetUsername=replyList.map(async (itemReply) => {
-          let getUser = await this._userRepository.getUserById(
-            itemReply.userId
-          );
-          let result = { ...itemReply, username: getUser.username };
-          delete result.userId;
-          return result;
-        })
+      replyList = replyList.map( (itemReply) => {
+        let result = { 
+          ...itemReply,
+          content: itemReply.isDeleted ? "**balasan telah dihapus**" : itemReply.content
+        };
+        delete result.isDeleted;
+        return result;
+      });
 
-      //prmise 
-      replyList = await Promise.all(promiseReplyListGetUsername);
-      let getUser = await this._userRepository.getUserById(item.userId);
       let resultComment = {
         ...item,
         replies: replyList,
-        username: getUser.username,
+        content: item.isDeleted ? "**komentar telah dihapus**" : item.content,
       };
-      delete resultComment.userId;
+      delete resultComment.isDeleted;
 
       return resultComment;
     });
-
 
     commentList = await Promise.all(getReplies);
     let thread = { ...threadDetail, comments: commentList };

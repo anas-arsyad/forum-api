@@ -159,9 +159,10 @@ describe("CommentRepositoryPostgres", () => {
         expect.arrayContaining([
           expect.objectContaining({
             id: useCasePayload.id,
-            userId: useCasePayload.userId,
+            username: 'dicoding',
             date: expect.any(Date),
             content: "Test content",
+            isDeleted:false
           }),
         ])
       );

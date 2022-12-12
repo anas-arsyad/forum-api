@@ -39,57 +39,31 @@ class CommentRepositoryPostgres extends CommentRepository {
     return true;
   }
 
-  // async getCommentByThreadId(id) {
-  //   const query = {
-  //     text: `
-  //     select
-  //       t2.id,
-  //       t3.username ,
-  //       t2."date" ,
-  //       case
-  //           when 
-  //           t2.is_deleted = true then '**komentar telah dihapus**'
-  //           else t2."content"
-  //       end content
-  //       from
-  //           threads t1
-  //       join "comments" t2 on
-  //           t1.id = t2.thread_id
-  //       join users t3 on
-  //           t3.id = t2.user_id
-  //       where t1.id =$1
-  //       order by
-  //           t2."date" asc
-  //       `,
-  //     values: [id],
-  //   };
-
-  //   let result = await this._pool.query(query);
-  //   if (!result.rowCount) {
-  //     throw new NotFoundError("comment tidak ditemukan");
-  //   }
-  //   return result.rows;
-  // }
-
-  async getCommentByThreadId(threadId) {
+  async getCommentByThreadId(id) {
     const query = {
       text: `
       select
         t2.id,
-        t2.user_id "userId" ,
+        t3.username ,
         t2."date" ,
-        case
-            when 
-            t2.is_deleted = true then '**komentar telah dihapus**'
-            else t2."content"
-        end content
+        t2.is_deleted "isDeleted",
+        t2.content
+        --case
+        --    when 
+        --    t2.is_deleted = true then '**komentar telah dihapus**'
+        --    else t2."content"
+        --end content
         from
-            "comments" t2
-        where t2.thread_id  =$1
+            threads t1
+        join "comments" t2 on
+            t1.id = t2.thread_id
+        join users t3 on
+            t3.id = t2.user_id
+        where t1.id =$1
         order by
             t2."date" asc
         `,
-      values: [threadId],
+      values: [id],
     };
 
     let result = await this._pool.query(query);
@@ -98,6 +72,34 @@ class CommentRepositoryPostgres extends CommentRepository {
     // }
     return result.rows;
   }
+
+  // async getCommentByThreadId(threadId) {
+  //   const query = {
+  //     text: `
+  //     select
+  //       t2.id,
+  //       t2.user_id "userId" ,
+  //       t2."date" ,
+  //       case
+  //           when 
+  //           t2.is_deleted = true then '**komentar telah dihapus**'
+  //           else t2."content"
+  //       end content
+  //       from
+  //           "comments" t2
+  //       where t2.thread_id  =$1
+  //       order by
+  //           t2."date" asc
+  //       `,
+  //     values: [threadId],
+  //   };
+
+  //   let result = await this._pool.query(query);
+  //   // if (!result.rowCount) {
+  //   //   throw new NotFoundError("comment tidak ditemukan");
+  //   // }
+  //   return result.rows;
+  // }
 
   async checkCommentById(id) {
     const query = {

@@ -40,6 +40,6 @@ describe("a AddedThread entieties", () => {
     expect(detailThread.title).toEqual(payload.title);
     expect(detailThread.username).toEqual(payload.username);
     expect(detailThread.body).toEqual(payload.body);
-    expect(detailThread.date).toBeInstanceOf(Date);
+    expect(detailThread.date).toEqual(payload.date)
   });
 });
